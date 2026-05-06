@@ -889,7 +889,7 @@ function renderTrendList(platform) {
     return;
   }
   list.innerHTML = data.slice(0, 10).map((v, i) => `
-    <div class="trend-item" onclick="useTrendRef(${i}, '${platform}')">
+    <div class="trend-item">
       <div class="trend-rank ${i < 3 ? 'top3' : ''}">#${i+1}</div>
       <div class="trend-info">
         <div class="trend-account">${v.account_name || '未知帳號'}</div>
@@ -901,7 +901,13 @@ function renderTrendList(platform) {
           <div class="trend-pub">${v.platform === 'threads' ? '瀏覽' : '觀看'}</div>
         </div>
       </div>
-      <button class="trend-use-btn" onclick="event.stopPropagation(); useTrendRef(${i},'${platform}')">用此參考</button>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <a href="${v.video_url || v.account_url || '#'}" target="_blank" rel="noopener"
+          class="trend-use-btn" style="text-decoration:none;display:flex;align-items:center;gap:3px;">
+          ▶ 觀看
+        </a>
+        <button class="trend-use-btn" onclick="useTrendRef(${i},'${platform}')">📌 參考</button>
+      </div>
     </div>
   `).join('');
 }
@@ -1034,7 +1040,7 @@ ${topTrends || '（資料載入中）'}
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-      model: 'claude-sonnet-4-5',
+        model: 'claude-sonnet-4-20250514',
         max_tokens: 2000,
         messages: [{ role: 'user', content: userMessage }]
       })
@@ -1125,10 +1131,10 @@ async function loginGoogle() {
       window.location.href = res.url;
     } else {
       // 直接跳轉
-      window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://twvl-ai.vercel.app')}`;
+      window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(window.location.origin)}`;
     }
   } catch(e) {
-    window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://twvl-ai.vercel.app')}`;
+    window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(window.location.origin)}`;
   }
 }
 
