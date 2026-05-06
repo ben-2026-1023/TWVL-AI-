@@ -1040,14 +1040,14 @@ ${topTrends || '（資料載入中）'}
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 2000,
         messages: [{ role: 'user', content: userMessage }]
       })
     });
 
-    if (!res.ok) throw new Error('API 錯誤');
     const data = await res.json();
+    if (data.error) throw new Error(data.error.message || 'API 錯誤');
     const text = data.content?.map(c => c.text||'').join('') || '生成失敗，請再試一次';
 
     // Show result
@@ -1131,10 +1131,10 @@ async function loginGoogle() {
       window.location.href = res.url;
     } else {
       // 直接跳轉
-      window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(window.location.origin)}`;
+      window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://twvl-ai.vercel.app')}`;
     }
   } catch(e) {
-    window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(window.location.origin)}`;
+    window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://twvl-ai.vercel.app')}`;
   }
 }
 
