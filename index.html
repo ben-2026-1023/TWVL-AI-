@@ -604,7 +604,7 @@ footer a:hover { color: var(--text); }
         <!-- 平台 -->
         <div class="form-group">
           <label class="form-label">發布平台 <span class="req">*</span></label>
-          <select class="form-select" id="fPlatform">
+          <select class="form-select" id="fPlatform" onchange="onPlatformChange(this.value)">
             <option value="instagram">Instagram Reels</option>
             <option value="tiktok">TikTok</option>
             <option value="threads">Threads</option>
@@ -669,7 +669,7 @@ footer a:hover { color: var(--text); }
         </div>
 
         <!-- 影片長度 -->
-        <div class="form-group">
+        <div class="form-group" id="durationGroup">
           <label class="form-label">影片長度</label>
           <div class="chip-group" id="durChips">
             <div class="chip" onclick="toggleChip(this,'dur')">15秒</div>
@@ -947,6 +947,16 @@ function clearTrendRef() {
   document.getElementById('trendRefBox').innerHTML = '<span style="color:var(--muted);font-size:12px">點選上方排行榜的「用此參考」即可帶入熱門內容分析</span>';
 }
 
+// ── PLATFORM CHANGE ──
+function onPlatformChange(platform) {
+  const durGroup = document.getElementById('durationGroup');
+  if (platform === 'threads') {
+    durGroup.style.display = 'none';
+  } else {
+    durGroup.style.display = 'flex';
+  }
+}
+
 // ── CHIP TOGGLE ──
 function toggleChip(el, group) {
   const siblings = el.parentElement.querySelectorAll('.chip');
@@ -1006,7 +1016,7 @@ async function generatePlan() {
     : '';
 
   const userMessage = `
-你是台灣短影音企劃專家，請根據以下資訊生成 ${count} 個完整的短影音企劃腳本。
+你是台灣社群媒體企劃專家，請根據以下資訊生成 ${count} 個完整的${platform === 'threads' ? 'Threads 爆款文字貼文' : '短影音企劃腳本'}。
 
 【平台】${platform}
 【帳號定位】${niche}
@@ -1024,13 +1034,18 @@ ${topTrends || '（資料載入中）'}
 
 請根據以上資訊，特別是結合台灣熱門趨勢，生成具有爆款潛力的企劃。
 
-每個企劃請包含：
+${platform === 'threads' ? `每篇貼文請包含：
+1. 📌 貼文標題／開頭第一句（要夠吸睛讓人想看更多）
+2. 🎯 核心亮點（為何會爆紅）
+3. 📝 完整貼文內容（自然口語化，適合 Threads 風格）
+4. #️⃣ 建議hashtag（3-5個）
+5. 💡 發文小建議（最佳時間、互動引導）` : `每個企劃請包含：
 1. 📌 企劃標題
 2. 🎯 核心亮點（為何會爆紅）
 3. 🎬 開場鉤子（前3秒台詞/畫面）
 4. 📝 完整腳本（含台詞、節奏說明）
 5. #️⃣ 建議hashtag（5-8個）
-6. 💡 拍攝小建議
+6. 💡 拍攝小建議`}
 
 語氣要自然口語化，符合台灣年輕人說話方式，避免過於商業廣告感。
 `.trim();
