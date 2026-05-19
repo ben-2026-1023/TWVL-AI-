@@ -677,6 +677,11 @@ function closeModal() { document.getElementById('loginModal').classList.remove('
 
 // ── Google OAuth：直接跳轉，相容手機與桌機 ──
 function loginGoogle() {
+  const isWebView = /FBAN|FBAV|Instagram|Line|KAKAOTALK|MicroMessenger/i.test(navigator.userAgent);
+  if (isWebView) {
+    showToast('⚠️ 請用 Safari 或 Chrome 開啟網站再登入');
+    return;
+  }
   const redirectTo = encodeURIComponent('https://www.twvlai.com');
   window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${redirectTo}`;
 }
